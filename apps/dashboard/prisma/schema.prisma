@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  storeUrl       String?
+  storeId        String   @unique @default(cuid())
+  accentColor    String   @default("#c8956c")
+  widgetPosition String   @default("bottom-right")
+  buttonText     String   @default("Not sure if this scent is for you?")
+  createdAt      DateTime @default(now())
+
+  products         Product[]
+  quizCompletions  QuizCompletion[]
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  merchantId    String
+  name          String
+  url           String
+  description   String   @default("")
+  imageUrl      String   @default("")
+  scentFamilies String   @default("[]")
+  intensity     String   @default("Medium")
+  moods         String   @default("[]")
+  externalId    String?
+  createdAt     DateTime @default(now())
+
+  merchant        Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  quizCompletions QuizCompletion[]
+
+  @@index([merchantId])
+}
+
+model QuizCompletion {
+  id          String   @id @default(cuid())
+  merchantId  String
+  productId   String?
+  answers     String
+  addedToCart Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  product  Product? @relation(fields: [productId], references: [id])
+
+  @@index([merchantId])
+}

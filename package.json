@@ -1,0 +1,22 @@
+{
+  "name": "viph",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "db:push": "cd apps/dashboard && DATABASE_URL='file:./prisma/dev.db' npx prisma db push",
+    "db:seed": "cd apps/dashboard && DATABASE_URL='file:./prisma/dev.db' node -r ts-node/register prisma/seed.ts",
+    "db:studio": "cd apps/dashboard && DATABASE_URL='file:./prisma/dev.db' npx prisma studio",
+    "widget:build": "cd apps/widget && node build.mjs"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}
