@@ -4,20 +4,21 @@ import path from "path";
 
 const DATA_FILE = path.join(process.cwd(), "waitlist.json");
 
-async function readWaitlist(): Promise<string[]> {
+async function appendEmailLocally(email: string): Promise<void> {
   try {
-    const raw = await fs.readFile(DATA_FILE, "utf-8");
-    return JSON.parse(raw);
+    let list: string[] = [];
+    try {
+      const raw = await fs.readFile(DATA_FILE, "utf-8");
+      list = JSON.parse(raw);
+    } catch {
+      // File doesn't exist yet — start fresh
+    }
+    if (!list.includes(email)) {
+      list.push(email);
+      await fs.writeFile(DATA_FILE, JSON.stringify(list, null, 2));
+    }
   } catch {
-    return [];
-  }
-}
-
-async function appendEmail(email: string): Promise<void> {
-  const list = await readWaitlist();
-  if (!list.includes(email)) {
-    list.push(email);
-    await fs.writeFile(DATA_FILE, JSON.stringify(list, null, 2));
+    // Read-only filesystem (e.g. Vercel) — webhook is the capture mechanism
   }
 }
 
@@ -30,9 +31,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    await appendEmail(email);
+    // Best-effort local file (works in dev, silently skipped on Vercel)
+    await appendEmailLocally(email);
 
-    // Hit webhook if configured
+    // Webhook — primary capture mechanism in production
     const webhookUrl = process.env.WAITLIST_WEBHOOK_URL;
     if (webhookUrl) {
       fetch(webhookUrl, {
