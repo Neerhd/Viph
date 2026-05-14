@@ -1,4 +1,4 @@
-import type { Product as CoreProduct, ScentFamily, Intensity, Mood } from "@viph/core";
+import type { Product as CoreProduct, ScentFamily, Intensity, Mood } from "@/lib/core";
 
 type PrismaProduct = {
   id: string;

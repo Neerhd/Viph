@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ScentFamily, Intensity, Mood } from "@viph/core";
+import type { ScentFamily, Intensity, Mood } from "@/lib/core";
 
 const SCENT_FAMILIES: ScentFamily[] = [
   "Citrus", "Woody", "Floral", "Fresh", "Sweet", "Earthy", "Spicy", "Vanilla", "Lavender", "Cedar", "Ocean", "Spice",

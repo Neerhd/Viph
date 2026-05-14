@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { matchProducts } from "@viph/core";
+import { matchProducts } from "@/lib/core";
 import { toCoreProduct } from "@/lib/productUtils";
-import type { QuizAnswer } from "@viph/core";
+import type { QuizAnswer } from "@/lib/core";
 
 export async function POST(req: Request) {
   try {
